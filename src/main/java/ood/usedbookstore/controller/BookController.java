@@ -26,11 +26,11 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public Book getBookById(@PathVariable Long id) {
+    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
         try {
-            return facade.getBookById(id);
+            return ResponseEntity.ok(facade.getBookById(id));
         } catch (EntityNotFoundException e) {
-            return null;
+            return ResponseEntity.notFound().build();
         }
     }
 
