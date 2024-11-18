@@ -7,8 +7,6 @@ import ood.usedbookstore.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
 public class UserService implements UserServiceInterface {
     @Autowired
@@ -36,43 +34,13 @@ public class UserService implements UserServiceInterface {
         return userRepository.existsById(id);
     }
 
-    @Override
-    public boolean isAuthorized(String suid, Set<Role> roles) throws EntityNotFoundException {
-        User user = getUserBySUID(suid);
-
-        for (Role role : roles) {
-            if (user.getRoles().contains(role)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isAuthorized(Long id, Set<Role> roles) throws EntityNotFoundException {
-        User user = getUserById(id);
-
-        for (Role role : roles) {
-            if (user.getRoles().contains(role)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isAuthorized(User user, Set<Role> roles){
-        for (Role role : roles) {
-            if (user.getRoles().contains(role)) {
-                return true;
-            }
-        }
-        return false;
+    private static boolean hasRole(User user, Role role) {
+        return user.getRoles().contains(role);
     }
 
     @Override
     public boolean isAdmin(User user) {
-        return user.getRoles().contains(Role.ADMIN);
+        return hasRole(user, Role.ADMIN);
     }
 
     @Override
@@ -87,7 +55,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public boolean isFullTimeEmployee(User user) {
-        return user.getRoles().contains(Role.FULL_TIME_EMPLOYEE) || isAdmin(user);
+        return hasRole(user, Role.FULL_TIME_EMPLOYEE) || isAdmin(user);
     }
 
     @Override
@@ -102,7 +70,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public boolean isEmployee(User user) {
-        return user.getRoles().contains(Role.PART_TIME_EMPLOYEE) || isAdmin(user) || isFullTimeEmployee(user);
+        return hasRole(user, Role.PART_TIME_EMPLOYEE) || isAdmin(user) || isFullTimeEmployee(user);
     }
 
     @Override
@@ -117,7 +85,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public boolean isStudent(User user) {
-        return user.getRoles().contains(Role.STUDENT);
+        return hasRole(user, Role.STUDENT);
     }
 
     @Override

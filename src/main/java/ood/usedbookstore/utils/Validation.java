@@ -16,10 +16,8 @@ public class Validation {
 
     public static void validateISBN(String str, String columnName) {
         // TODO: Consider ISBN-10, ISBN-13 formats from pre-built modules
-        if (str == null || str.trim().isEmpty()) {
-            throw new IllegalArgumentException(columnName+" cannot be null or empty.");
-        }
-        else if (!str.matches("[A-Za-z0-9]+")) {
+        validateString(str, columnName);
+        if (!str.matches("[A-Za-z0-9]+")) {
             throw new IllegalArgumentException(columnName+" is not a valid ISBN number");
         } else if ( str.length() != 10) {
             throw new IllegalArgumentException(columnName+" is not a valid ISBN number");

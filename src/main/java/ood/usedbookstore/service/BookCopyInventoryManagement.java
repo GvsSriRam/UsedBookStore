@@ -1,6 +1,8 @@
 package ood.usedbookstore.service;
 
-import ood.usedbookstore.exceptions.*;
+import ood.usedbookstore.exceptions.BookCopyAlreadySoldException;
+import ood.usedbookstore.exceptions.EntityNotFoundException;
+import ood.usedbookstore.exceptions.InventoryException;
 import ood.usedbookstore.model.*;
 import ood.usedbookstore.utils.PricingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class BookCopyInventoryManagement {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private PricingUtils pricingUtils;
+
     public BookCopy buyBookCopy(Long id) throws InventoryException, EntityNotFoundException, BookCopyAlreadySoldException {
         BookCopy bookCopy = bookCopyService.getBookCopyById(id);
 
@@ -35,27 +40,37 @@ public class BookCopyInventoryManagement {
     }
 
     public BookCopy sellBookCopy(Long bookCopyId, String isbn, BookType booktype, BookCondition bookCondition, Branch branch) throws InventoryException, EntityNotFoundException {
-        double sellPrice;
         BookCopy bookCopy;
-        Inventory inventory;
 
         if (bookCopyId != null) {
             bookCopy = bookCopyService.getBookCopyById(bookCopyId);
-            sellPrice = PricingUtils.calculateBuyBackPrice(bookCopy.getPrice(), bookCopy.getBookType(), bookCopy.getBookCondition(), bookCondition);
-            bookCopy.updateCondition(bookCondition);
-            bookCopy.setPrice(sellPrice);
-
-            inventory = inventoryService.getInventoryByBookCopyId(bookCopyId);
-            inventory.transitionTo(BookStatus.IN_STOCK);
-            inventory.setDateModified(LocalDate.now());
-            inventoryService.updateInventory(inventory);
+            bookCopy = updateExistingBookCopyInInventory(bookCopy, bookCondition, branch);
         } else {
-            Book book = bookService.getBookByISBN(isbn);
-            sellPrice = PricingUtils.calculateBuyBackPrice(book.getMRP(), booktype, null, bookCondition);
-            bookCopy = new BookCopy(book, booktype, bookCondition, sellPrice);
-            bookCopy = bookCopyService.addBookCopy(bookCopy);
-            inventoryService.addInventory(new Inventory(branch, bookCopy));
+            bookCopy = createNewBookCopyInInventory(isbn, booktype, bookCondition, branch);
         }
         return bookCopy;
     }
+
+    private BookCopy updateExistingBookCopyInInventory(BookCopy bookCopy, BookCondition bookCondition, Branch branch) throws InventoryException, EntityNotFoundException {
+        double sellPrice = pricingUtils.calculatePrice(bookCopy.getPrice(), bookCopy.getBookType(), bookCopy.getBookCondition(), bookCondition);
+        bookCopy.updateCondition(bookCondition);
+        bookCopy.setPrice(sellPrice);
+        bookCopy = bookCopyService.updateBookCopy(bookCopy);
+
+        Inventory inventory = inventoryService.getInventoryByBookCopyId(bookCopy.getId());
+        inventory.transitionTo(BookStatus.IN_STOCK);
+        inventory.setDateModified(LocalDate.now());
+        inventoryService.updateInventory(inventory);
+        return bookCopy;
+    }
+
+    private BookCopy createNewBookCopyInInventory(String isbn, BookType bookType, BookCondition bookCondition, Branch branch) throws EntityNotFoundException {
+        Book book = bookService.getBookByISBN(isbn);
+        double sellPrice = pricingUtils.calculatePrice(book.getMRP(), bookType, null, bookCondition);
+        BookCopy bookCopy = new BookCopy(book, bookType, bookCondition, sellPrice);
+        bookCopy = bookCopyService.addBookCopy(bookCopy);
+        inventoryService.addInventory(new Inventory(branch, bookCopy));
+        return bookCopy;
+    }
+
 }

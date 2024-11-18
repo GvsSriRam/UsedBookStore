@@ -1,10 +1,7 @@
 package ood.usedbookstore.service;
 
 import ood.usedbookstore.exceptions.EntityNotFoundException;
-import ood.usedbookstore.model.Role;
 import ood.usedbookstore.model.User;
-
-import java.util.Set;
 
 public interface UserServiceInterface {
     void save(User user);
@@ -13,10 +10,6 @@ public interface UserServiceInterface {
     User getUserBySUID(String suid) throws EntityNotFoundException;
 
     boolean existsById(Long id);
-
-    boolean isAuthorized(String suid, Set<Role> roles) throws EntityNotFoundException;
-    boolean isAuthorized(Long id, Set<Role> roles) throws EntityNotFoundException;
-    boolean isAuthorized(User user, Set<Role> roles);
 
     boolean isAdmin(User user);
 

@@ -58,7 +58,6 @@ public class GlobalExceptionHandler {
         ExceptionErrorMapper errorDetails = new ExceptionErrorMapper(
                 request.getDescription(false), ex.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-
     }
 
     @ExceptionHandler(InventoryException.class)
@@ -66,7 +65,6 @@ public class GlobalExceptionHandler {
         ExceptionErrorMapper errorDetails = new ExceptionErrorMapper(
                 request.getDescription(false), ex.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-
     }
 
     // Add more exception handlers for other custom exceptions

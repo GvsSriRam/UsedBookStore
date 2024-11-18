@@ -1,6 +1,12 @@
 package ood.usedbookstore;
 
-import ood.usedbookstore.service.*;
+import ood.usedbookstore.pricing.DefaultPricingStrategy;
+import ood.usedbookstore.pricing.PricingStrategy;
+import ood.usedbookstore.service.BookCopyService;
+import ood.usedbookstore.service.OrderItemService;
+import ood.usedbookstore.service.OrderService;
+import ood.usedbookstore.service.TransactionService;
+import ood.usedbookstore.utils.PricingUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,4 +33,13 @@ public class CustomConfig {
         return new TransactionService();
     }
 
+    @Bean
+    public PricingStrategy pricingStrategy() {
+        return new DefaultPricingStrategy();
+    }
+
+    @Bean
+    public PricingUtils pricingUtils(PricingStrategy pricingStrategy) {
+        return new PricingUtils(pricingStrategy);
+    }
 }
