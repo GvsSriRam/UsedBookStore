@@ -24,38 +24,20 @@ public enum State {
             "Washington", "WA"), WEST_VIRGINIA("West Virginia", "WV"), WISCONSIN("Wisconsin", "WI"), WYOMING("Wyoming", "WY"), UNKNOWN(
             "Unknown", "");
 
-    private String name;
-    private String abbreviation;
+    private final String name;
+    private final String abbreviation;
 
-    private static final Map<String, State> STATES_BY_ABBR = new HashMap<String, State>();
+    private static final Map<String, State> STATES_ABBRIVATION_MAP = new HashMap<>();
 
     static {
         for (State state : values()) {
-            STATES_BY_ABBR.put(state.getAbbreviation(), state);
+            STATES_ABBRIVATION_MAP.put(state.getAbbreviation(), state);
         }
     }
 
     State(String name, String abbreviation) {
         this.name = name;
         this.abbreviation = abbreviation;
-    }
-
-    public static State valueOfAbbreviation(final String abbr) {
-        final State state = STATES_BY_ABBR.get(abbr);
-        if (state != null) {
-            return state;
-        } else {
-            return UNKNOWN;
-        }
-    }
-
-    public static State valueOfName(final String name) {
-        final String enumName = name.toUpperCase().replaceAll(" ", "_");
-        try {
-            return valueOf(enumName);
-        } catch (final IllegalArgumentException e) {
-            return State.UNKNOWN;
-        }
     }
 
     @Override
