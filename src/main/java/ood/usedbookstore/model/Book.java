@@ -26,7 +26,6 @@ import static ood.usedbookstore.utils.Validation.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

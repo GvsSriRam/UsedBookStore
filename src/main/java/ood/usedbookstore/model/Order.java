@@ -21,6 +21,7 @@ import org.hibernate.annotations.FetchMode;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,6 +29,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+//@Builder(access = AccessLevel.PUBLIC)
 @Table(name = "orders")
 public class Order {
     @Id
@@ -70,4 +72,62 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<OrderItem> orderItems;
+
+    public static class Builder {
+        private User user;
+        private Branch branch;
+        private LocalDate orderDate;
+        private double totalPrice;
+        private User employee;
+        private List<OrderItem> orderItems = new ArrayList<>();
+
+        public Builder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public Builder branch(Branch branch) {
+            this.branch = branch;
+            return this;
+        }
+
+        public Builder orderDate(LocalDate orderDate) {
+            this.orderDate = orderDate;
+            return this;
+        }
+
+        public Builder totalPrice(double totalPrice) {
+            this.totalPrice = totalPrice;
+            return this;
+        }
+
+        public Builder employee(User employee) {
+            this.employee = employee;
+            return this;
+        }
+
+        public Builder orderItems(List<OrderItem> orderItems) {
+            this.orderItems = orderItems;
+            return this;
+        }
+
+        // ... other builder methods for each attribute ...
+
+        public Builder orderItem(OrderItem orderItem) {
+            this.orderItems.add(orderItem);
+            return this;
+        }
+
+        public Order build() {
+            // Perform validation or calculations if needed
+            Order order = new Order();
+            order.user = this.user;
+            order.branch = this.branch;
+            order.orderDate = this.orderDate;
+            order.totalPrice = this.totalPrice;
+            order.employee = this.employee;
+            order.orderItems = this.orderItems;
+            return order;
+        }
+    }
 }

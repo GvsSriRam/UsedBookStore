@@ -2,9 +2,6 @@ package ood.usedbookstore.model;
 
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Getter
 public enum State {
     ALABAMA("Alabama", "AL"), ALASKA("Alaska", "AK"), AMERICAN_SAMOA("American Samoa", "AS"), ARIZONA("Arizona", "AZ"), ARKANSAS(
@@ -26,14 +23,6 @@ public enum State {
 
     private final String name;
     private final String abbreviation;
-
-    private static final Map<String, State> STATES_ABBRIVATION_MAP = new HashMap<>();
-
-    static {
-        for (State state : values()) {
-            STATES_ABBRIVATION_MAP.put(state.getAbbreviation(), state);
-        }
-    }
 
     State(String name, String abbreviation) {
         this.name = name;

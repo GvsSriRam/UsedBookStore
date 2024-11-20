@@ -20,12 +20,14 @@ public class OrderService implements OrderServiceInterface {
 
     @Override
     public Order createOrder(User user, Branch branch, User employee) throws EntityNotFoundException {
-        Order order = new Order();
-        order.setUser(user);
-        order.setBranch(branch);
-        order.setEmployee(employee);
-        order.setOrderDate(LocalDate.now());
-        order.setTotalPrice(0.0);
+
+        Order order = new Order.Builder()
+                .user(user)
+                .branch(branch)
+                .employee(employee)
+                .orderDate(LocalDate.now())
+                .totalPrice(0.0)
+                .build();
         return orderRepository.save(order);
     }
 
