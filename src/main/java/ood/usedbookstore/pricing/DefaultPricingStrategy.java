@@ -8,8 +8,9 @@ public class DefaultPricingStrategy implements PricingStrategy {
     public double calculatePrice(double currentPrice, BookType bookType, BookCondition previousCondition, BookCondition newCondition) {
         int diff;
         if (previousCondition == null) {
-            diff = BookCondition.maxLevel() - newCondition.getConditionLevel(); // Assuming you have a maxLevel method
-        } else if (newCondition.getConditionLevel() > previousCondition.getConditionLevel()) {
+            diff = BookCondition.maxLevel() - newCondition.getConditionLevel();
+        }
+        else if (!previousCondition.isValidTransition(newCondition)) {
             throw new IllegalArgumentException("Returned book condition can't be better than its previous condition.");
         } else {
             diff = newCondition.getConditionLevel() - previousCondition.getConditionLevel();
