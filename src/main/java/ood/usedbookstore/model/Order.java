@@ -29,7 +29,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-//@Builder(access = AccessLevel.PUBLIC)
 @Table(name = "orders")
 public class Order {
     @Id
@@ -110,8 +109,6 @@ public class Order {
             this.orderItems = orderItems;
             return this;
         }
-
-        // ... other builder methods for each attribute ...
 
         public Builder orderItem(OrderItem orderItem) {
             this.orderItems.add(orderItem);
